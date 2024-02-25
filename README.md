@@ -27,7 +27,7 @@ Weight of Debt = $6.0715 \\%$
 Weight of Equity = $93.9285 \\%$  
 Cost of Debt = $4.1347 \\%$  
 Cost of Euqity = $13.9296 \\%$  
-WACC = $6.0715 \\% * 4.1347 \\% * (1 - 6.72\\%) + 93.9285 \\% * 13.9296 \\% = 13.318 \\%$
+**WACC** = $6.0715 \\% * 4.1347 \\% * (1 - 6.72\\%) + 93.9285 \\% * 13.9296 \\% = 13.318 \\%$
 
 ## Terminal Value
 [Wall Street Oasis | Terminal Value](https://www.wallstreetoasis.com/resources/skills/valuation/terminal-value)  
