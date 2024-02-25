@@ -26,8 +26,7 @@ Market Premium: $7.65 \%$
 Weight of Debt = $6.0715 \%$  
 Weight of Equity = $93.9285 \%$  
 Cost of Debt = $4.1347 \%$  
-Cost of Euqity = $13.9296 \%$  
-
+Cost of Euqity = $13.9296 \%$   
 **WACC** = $6.0715 \% * 4.1347 \% * (1 - 6.72\%) + 93.9285 \% * 13.9296 \% = 13.318 \%$  
 
 ## Terminal Value
@@ -36,9 +35,10 @@ Cost of Euqity = $13.9296 \%$
 
 ### Exit Multiple Method
 The exit multiple method assumes that a company will **be sold after the forecast period** for a multiple of some market indicator.  
-$$
+
+$
 Terminal\ Value\ = Final\ Year\ Metric\ *\ Exit\ Multiple
-$$
+$
 
 Advantages:  
 - Reflecting the market expectations and valuation multiples of comparable companies.
@@ -67,9 +67,9 @@ Drawbacks:
 
 ### Perpetual Growth Method
 The perpetual growth method assumes that a company will **always produce cash flows at a steady rate** after the projection time.  
-$$
+$
 Terminal\ Value = \frac{Final\ Year\ FCF\ *\ (1\ +\ Perpetuity\ Growth\ Rate)}{(Discount\ Rate\ -\ Perpetuity\ Growth\ Rate)}
-$$
+$
 
 Advantages:
 - Consist with the theory of discounted cash flow valuation.
