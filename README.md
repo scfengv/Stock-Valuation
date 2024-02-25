@@ -18,16 +18,16 @@ Cost of Equity ($R_E$) = $Treasury\ Bond\ Rate\ +\ Beta * (Expected\ Market\ Ret
 ---
 #### Ex: AVGO
 
-Expected Market Return: $11.91 \%$  
-The value of 10-year Treasury Bond Yield: $4.26 \%$  
-Market Premium: $7.65 \%$  
+Expected Market Return: $11.91 \\%$  
+The value of 10-year Treasury Bond Yield: $4.26 \\%$  
+Market Premium: $7.65 \\%$  
 
 
-Weight of Debt = $6.0715 \%$  
-Weight of Equity = $93.9285 \%$  
-Cost of Debt = $4.1347 \%$  
-Cost of Euqity = $13.9296 \%$  
-**WACC** = $6.0715 \% * 4.1347 \% * (1 - 6.72\%) + 93.9285 \% * 13.9296 \% = 13.318 \%$  
+Weight of Debt = $6.0715 \\%$  
+Weight of Equity = $93.9285 \\%$  
+Cost of Debt = $4.1347 \\%$  
+Cost of Euqity = $13.9296 \\%$  
+WACC = $6.0715 \\% * 4.1347 \\% * (1 - 6.72\\%) + 93.9285 \\% * 13.9296 \\% = 13.318 \\%$
 
 ## Terminal Value
 [Wall Street Oasis | Terminal Value](https://www.wallstreetoasis.com/resources/skills/valuation/terminal-value)  
@@ -36,7 +36,7 @@ Cost of Euqity = $13.9296 \%$
 ### Exit Multiple Method
 The exit multiple method assumes that a company will **be sold after the forecast period** for a multiple of some market indicator.  
 
-$Terminal\ Value\ = Final\ Year\ Metric\ *\ Exit\ Multiple$
+$$Terminal\ Value\ = Final\ Year\ Metric\ *\ Exit\ Multiple$$
 
 Advantages:  
 - Reflecting the market expectations and valuation multiples of comparable companies.
@@ -65,7 +65,7 @@ Drawbacks:
 
 ### Perpetual Growth Method
 The perpetual growth method assumes that a company will **always produce cash flows at a steady rate** after the projection time.  
-$Terminal\ Value = \frac{Final\ Year\ FCF\ *\ (1\ +\ Perpetuity\ Growth\ Rate)}{(Discount\ Rate\ -\ Perpetuity\ Growth\ Rate)}$
+$$Terminal\ Value = \frac{Final\ Year\ FCF\ *\ (1\ +\ Perpetuity\ Growth\ Rate)}{(Discount\ Rate\ -\ Perpetuity\ Growth\ Rate)}$$
 
 Advantages:
 - Consist with the theory of discounted cash flow valuation.
@@ -81,13 +81,13 @@ Drawbacks:
 TTM Revenue: $35,819,000,000$
 
 EBIT: $16,719,000,000$  
-EBIT margin: $46.68 \%$  
+EBIT margin: $46.68 \\%$  
 Average Industrial EV / EBIT of Semiconductor: $53.32$  
 EV / EBIT of AVGO: $37.8$  
 Terminal Value by EBIT multiple: $631,978,200,000$
 
 EBITDA: $20,554,000,000$  
-EBITDA margin: $57.38 \%$  
+EBITDA margin: $57.38 \\%$  
 Average Industrial EV / EBITDA of Semiconductor: $31.59$  
 EV / EBITDA of AVGO: $30.74$  
 Terminal Value by EBITDA multiple: $631,829,960,000$  
@@ -95,7 +95,7 @@ Terminal Value by EBITDA multiple: $631,829,960,000$
 Terminal Value by Perpetual Growth Method: $339,856,060,388$
 
 Latest 2023 Free Cash Flow:          $17,633,000,000$  
-Free Cash Flow margin: $49.23 \%$
+Free Cash Flow margin: $49.23 \\%$
 
 Predicted 2024 Discounted Cash Flow: $19,276,168,806$    
 Predicted 2025 Discounted Cash Flow: $19,795,465,950$  
@@ -109,8 +109,8 @@ Net Present Value of AVGO: $467,448,741,593$
 ### Result
 Target Price: $945.03$  
 Current Price: $1296.37$  
-Margin of Safety: $-27.1 \%$  
-Implied 5-year Growth Rate by current price: $57.7978 \%$
+Margin of Safety: $-27.1 \\%$  
+Implied 5-year Growth Rate by current price: $57.7978 \\%$
 
 ```
 g = (price * share_num - dcf_terminal + debt_num - ccs_num) / fcf_num
