@@ -126,7 +126,7 @@ r = t * (1 + wacc / 100) - 1
 ## Source of Data
 - Stock relevant data: [Yahoo Finance](https://finance.yahoo.com), [Stock Analysis](https://stockanalysis.com)
 - 10-Year Treasury Bond Rate: [YCharts](https://ycharts.com/indicators/10_year_treasury_rate)
-- Enterprise Value Multiples by Sector: 
+- Enterprise Value Multiples by Sector: [NYU](https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/vebitda.html)
 
 ## Drawbacks
 - Yet not able to calculate the growth rates of different businesses separately
