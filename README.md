@@ -7,9 +7,11 @@ This project serves as a 5-year DCF model to evaluate companies' target prices, 
 
 ## Free Cash Flow
 
-$Free\ Cash\ Flow (FCF) =
-EBIT*(1-Tax\%) + Depreciation\ \&\ Amortization - Capital\ Expenditures - Change\ in\ Net\ Working\ Cpatial \\
-= Current\ Operating\ Asset - Current\ Operating\ Liability$
+```math
+Free\ Cash\ Flow (FCF) =
+EBIT*(1-Tax \%) + Depreciation\ \&\ Amortization - Capital\ Expenditures - Change\ in\ Net\ Working\ Cpatial \\
+= Current\ Operating\ Asset - Current\ Operating\ Liability
+```
 
 ## WACC
 $WACC\ (Weighted\ Average\ Cost\ of\ Capital) = W_D * R_D * (1-tax\ rate) + W_E * R_E$ <br><br>
