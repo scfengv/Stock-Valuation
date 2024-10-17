@@ -31,6 +31,15 @@ python DCFModel.py --ticker SYMBOL [--TGR RATE] [--riskfree SYMBOL] [--market SY
 python DCFModel.py --ticker NVDA    --TGR 0.02   --riskfree ^FVX     --market VT
 ```
 
+## Result
+
+```bash
+Implied Stock Price: 76.18
+Margin of Safety: 8.31%
+
+Current price: 70.34 ; Implied Growth Rate: 2.87%
+```
+
 ## Free Cash Flow
 
 Free cash flow (FCF) represents the cash that a company generates after accounting for cash outflows to support its operations and maintain its capital assets. FCF is a measure of profitability that **excludes the non-cash expenses** of the income statement. It also includes **spending on equipment and assets**, as well as changes in working capital from the balance sheet.

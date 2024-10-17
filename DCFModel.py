@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import yfinance as yf
+import warnings
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
@@ -44,7 +45,7 @@ class DCFModel():
         self.TerminalValue = self._CalculateTerminalValue()
         self.EnterpriseValue = self._DiscountedCashFlow()
         self.ImpliedSharePrice = self._CalculateImpliedSharePrice()
-        self.MarginofSafety = ((self.ImpliedSharePrice - self.price) / self.price) * 100
+        self.MarginofSafety = ((self.ImpliedSharePrice - self.price) / self.price)
 
     def _CalculateFutureRevenue(self):
         self.revenue = self.income.loc["Total Revenue"][:-1]
@@ -146,13 +147,14 @@ class DCFModel():
     
 
 def main():
+    warnings.filterwarnings("ignore")
     ticker = str(f"{args.ticker}").upper()
     model = DCFModel(ticker, args)
     print(f"Implied Stock Price: {model.ImpliedSharePrice:.2f}")
     print(f"Margin of Safety: {model.MarginofSafety:.2%}")
 
     ImpliedGrowthRate = model.CalculateImpliedGrowthRate()
-    print(f"Implied Growth Rate: {ImpliedGrowthRate:.2%}")
+    print(f"Current price: {model.price} ; Implied Growth Rate: {ImpliedGrowthRate:.2%}")
 
 if __name__ == "__main__":
     main()
