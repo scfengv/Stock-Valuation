@@ -1,49 +1,144 @@
-# Stock-Valuation
+# Discounted Cash Flow Model
+Build: Feb 17, 2024
 
+Revise: Oct 17, 2024
 ## Introduction
-This project serves as a 5-year DCF model to evaluate companies' target prices, using Selenium to fetch stock information mainly from [Yahoo Finance](https://finance.yahoo.com) & [Stock Analysis](https://stockanalysis.com). The information includes everything needed to calculate DCF. Start by calculating WACC; after that, three common methods are used, perpetual growth / EV2EBIT multiple / EV2EBITDA multiple, to determine the terminal value depending on the industry of the company. Instead of discounting Free Cash Flow at the end of the year, as most people do, I reference [Ben's way](https://www.youtube.com/@rareliquid), setting the discount period in the middle of the year (*Mid-year convention*, assuming getting the cash flow in the middle of the year instead of at the end of the year). In the end, I tried to solve a quintic equation to work out the market's expected five-year average growth rate as implied by current stock prices.
 
-- Take **Broadcom Inc. (AVGO)** as an example, which is a company I would like to buy recently.
+This five-year Discounted Cash Flow (DCF) model is designed to estimate the intrinsic value of publicly traded companies based on projected future cash flows. Leveraging financial data obtained through the `yfinance` library, this comprehensive valuation tool performs a series of complex calculations, including future **revenue** forecasts, **EBIT** (Earnings Before Interest and Taxes), **EBIAT** (Earnings Before Interest After Taxes), **Free Cash Flow**, **Weighted Average Cost of Capital** (WACC), and **Terminal Value**. The model's primary outputs are the **implied stock price** and the associated **margin of safety**, providing investors with crucial metrics for informed decision-making. Additionally, the model employs a **bisection algorithm** to compute the **implied revenue growth rate** that aligns the calculated stock price with the current market price, offering further insight into market expectations.
+
+## Requirements
+- Python 3.x
+
+```python
+pip install -r requirements.txt
+```
+
+## Usage
+- Take **Coca-Cola (KO)** as an example
+
+```bash
+python DCFModel.py --ticker KO
+```
+
+Arguments:
+- `--ticker`: Stock ticker symbol (Required)
+- `--TGR`: Terminal Growth Rate (Default: `0.03`)
+- `--riskfree`: Risk-free rate ticker symbol (Default: `"^TNX"`)
+- `--market`: Market return ticker symbol (Default: `"VTI"`)
+
+```bash
+python DCFModel.py --ticker SYMBOL [--TGR RATE] [--riskfree SYMBOL] [--market SYMBOL]
+python DCFModel.py --ticker NVDA    --TGR 0.02   --riskfree ^FVX     --market VT
+```
 
 ## Free Cash Flow
 
+Free cash flow (FCF) represents the cash that a company generates after accounting for cash outflows to support its operations and maintain its capital assets. FCF is a measure of profitability that **excludes the non-cash expenses** of the income statement. It also includes **spending on equipment and assets**, as well as changes in working capital from the balance sheet.
+
 ```math
-Free\ Cash\ Flow (FCF) =
-EBIT*(1-Tax \%) + Depreciation\ \&\ Amortization - Capital\ Expenditures - Change\ in\ Net\ Working\ Cpatial <br><br>
+FCF =
+EBIT*(1-Tax \%) + Depreciation\ \&\ Amortization - Capital\ Expenditures - Change\ in\ Net\ Working\ Capital
 ```
 
 ```math
-FCF = Current\ Operating\ Asset - Current\ Operating\ Liability
+Net\ Working\ Capital = Current\ Operating\ Asset - Current\ Operating\ Liability
+```
+
+```python
+def _FreeCashFlow(self):
+    return (self.EBIAT + self.FutureDA - self.FutureCapEx - self.FutureNWC)
+```
+
+## Discounted Cash Flow
+
+Discounted cash flow (DCF) is a valuation method that estimates the value of an investment using its expected future cash flows to determine the **present value** (the value of an investment today).
+
+### Calculating DCF
+
+```math
+DCF = \frac{CF_1}{(1+r)^1} + \frac{CF_2}{(1+r)^2} + ... + \frac{CF_n}{(1+r)^n}
+```
+
+1. Forecast the expected cash flow
+2. Determine the discount rate
+3. Discount the forecasted cash flow back to the present day
+
+```python
+def _DiscountedCashFlow(self):
+    DiscountedCashFlow = sum(
+        pd.Series((fcf / ((1 + self.WACC) ** (0.5 + i))) for i, fcf in enumerate(self.FutureFreeCashFlow))
+    )
+    DiscountedTerminalValue = self.TerminalValue / ((1 + self.WACC) ** 5)
+    EnterpriseValue = DiscountedCashFlow + DiscountedTerminalValue
+    return EnterpriseValue
 ```
 
 ## WACC
-$WACC\ (Weighted\ Average\ Cost\ of\ Capital) = W_D * R_D * (1-tax\ rate) + W_E * R_E$ <br><br>
-Weight of Debt ($W_D$) = $\Large\frac{Debt}{Debt\ +\ Market\ Cap}$ <br><br>
-Weight of Equity ($W_E$) = $\Large\frac{Market\ Cap}{Debt\ +\ Market\ Cap}$ <br><br>
-Cost of Debt ($R_D$) = $\Large\frac{Interest\ Expense}{Debt}$ <br><br>
-Cost of Equity ($R_E$) = $Treasury\ Bond\ Rate\ +\ Beta * (Expected\ Market\ Return - Treasury\ Bond\ Rate\ )$
 
-* Expected Market Return: VTI 10-Year Trailing Returns
-* Treasury Bond Rate: 10-Year Treasury Rate
+WACC (Weighted Average Cost of Capital) is company's average after-tax cost of capital, such as debt and equity. WACC is a common way to determine the required rate of return (RRR) and discount rate for future cash flow in DCF analysis.
 
----
-#### Ex: AVGO
+WACC is calculated by multiplying the cost of each capital source (debt and equity) by its relevant weight and then adding those results together.
 
-Expected Market Return: $11.91 \\%$  
-The value of 10-year Treasury Bond Yield: $4.26 \\%$  
-Market Premium: $7.65 \\%$  
+```math
+WACC = W_D * R_D * (1-Tax \%) + W_E * R_E
+```
 
+- Weighted value of debt-based financing
+```math
+Weight\ of\ Debt\ (W_D) = \frac{Debt}{Debt\ +\ Market\ Cap}
+```
 
-Weight of Debt = $6.0715 \\%$  
-Weight of Equity = $93.9285 \\%$  
-Cost of Debt = $4.1347 \\%$  
-Cost of Euqity = $13.9296 \\%$  
-**WACC** = $6.0715 \\% * 4.1347 \\% * (1 - 6.72\\%) + 93.9285 \\% * 13.9296 \\% = 13.318 \\%$
+```math
+Cost\ of\ Debt\ (R_D) = \frac{Interest\ Expense}{Debt}
+```
+
+Cost of Debt is calculated by averaging the yield to maturity for a company's outstanding debts. Businesses are able to deduct interest expenses from their taxes. Because of this, the net cost of a company's debt is the amount of interest it is paying minus the amount of interest it can deduct on its taxes.
+
+- Weighted value of equity-based financing
+```math
+Weight\ of\ Equity\ (W_E) = \frac{Market\ Cap}{Debt\ +\ Market\ Cap}
+```
+
+```math
+Cost\ of\ Equity\ (R_E) = Risk-Free\ Rate\ +\ Beta * (Expected\ Market\ Return - Risk-Free\ Rate)
+```
+
+Cost of Equity is calculated by capital asset pricing model (CAPM), representing the expected return of investment. I use **VTI's 5y average return** as Expected Market Return ($15.29 \%$, 2024/10/17) and **U.S. 10 Year Treasury yield** as Risk-Free Rate ($4.032 \%$, 2024/10/17). Risk-Free Rate is the time value of money. The difference between Expected Market Return and Risk-Free Rate is market risk premium, which is the expected compensation for taking on additional risk.
+
+Beta compares a stock's volatility or systematic risk to the market. A stock’s beta is then multiplied by the market risk premium, representing the RRR or discount rate.
+
+```python
+def _WACC(self):
+    WeightofDebt = self.debt / (self.debt + self.MarketCap)
+    WeightofEquity = self.MarketCap / (self.debt + self.MarketCap)
+    CostofDebt = self.interest / self.debt
+    CostofEquity = self.RiskFree + (self.beta * (self.MarketReturn - self.RiskFree))
+    WACC = WeightofDebt * CostofDebt * (1 - self.TaxRate) + WeightofEquity * CostofEquity
+    return WACC
+```
 
 ## Terminal Value
 [Wall Street Oasis | Terminal Value](https://www.wallstreetoasis.com/resources/skills/valuation/terminal-value)  
 [Wall Street Oasis | EBIT vs EBITDA](https://www.wallstreetoasis.com/resources/skills/finance/exit-multiple)  
+### Perpetual Growth Method
+The perpetual growth method assumes that a company will **always produce cash flows at a steady rate** after the projection time.  
+$$Terminal\ Value = \frac{Final\ Year\ FCF\ *\ (1\ +\ Perpetuity\ Growth\ Rate)}{(Discount\ Rate\ -\ Perpetuity\ Growth\ Rate)}$$
 
+Advantages:
+- Consist with the theory of discounted cash flow valuation.
+- It is widely used and accepted by academics and practitioners.
+
+Drawbacks:
+- It is sensitive to the assumptions of the growth rate and the discount rate.
+- Improbable in a dynamic and competitive market.
+- This is because it ignores the potential changes in the industry structure.
+
+```python
+def _CalculateTerminalValue(self):
+    return (self.FutureFreeCashFlow[4] * (1 + self.TerminalGrowthRate)) / (self.WACC - self.TerminalGrowthRate)
+```
+
+---
 ### Exit Multiple Method
 The exit multiple method assumes that a company will **be sold after the forecast period** for a multiple of some market indicator.  
 
@@ -74,70 +169,14 @@ Drawbacks:
 
 ---
 
-### Perpetual Growth Method
-The perpetual growth method assumes that a company will **always produce cash flows at a steady rate** after the projection time.  
-$$Terminal\ Value = \frac{Final\ Year\ FCF\ *\ (1\ +\ Perpetuity\ Growth\ Rate)}{(Discount\ Rate\ -\ Perpetuity\ Growth\ Rate)}$$
-
-Advantages:
-- Consist with the theory of discounted cash flow valuation.
-- It is widely used and accepted by academics and practitioners.
-
-Drawbacks:
-- It is sensitive to the assumptions of the growth rate and the discount rate.
-- Improbable in a dynamic and competitive market.
-- This is because it ignores the potential changes in the industry structure.
-
----
-#### Ex: AVGO
-TTM Revenue: $35,819,000,000$
-
-EBIT: $16,719,000,000$  
-EBIT margin: $46.68 \\%$  
-Average Industrial EV / EBIT of Semiconductor: $53.32$  
-EV / EBIT of AVGO: $37.8$  
-Terminal Value by EBIT multiple: $631,978,200,000$
-
-EBITDA: $20,554,000,000$  
-EBITDA margin: $57.38 \\%$  
-Average Industrial EV / EBITDA of Semiconductor: $31.59$  
-EV / EBITDA of AVGO: $30.74$  
-Terminal Value by EBITDA multiple: $631,829,960,000$  
-
-Terminal Value by Perpetual Growth Method: $339,856,060,388$
-
-Latest 2023 Free Cash Flow:          $17,633,000,000$  
-Free Cash Flow margin: $49.23 \\%$
-
-Predicted 2024 Discounted Cash Flow: $19,276,168,806$    
-Predicted 2025 Discounted Cash Flow: $19,795,465,950$  
-Predicted 2026 Discounted Cash Flow: $20,134,707,875$  
-Predicted 2027 Discounted Cash Flow: $20,479,763,509$  
-Predicted 2028 Discounted Cash Flow: $20,830,732,484$  
-Predicted Terminal value of Discounted Cash Flow:  $366,931,902,969$  
-
-Net Present Value of AVGO: $467,448,741,593$
-
-### Result
-Target Price: $945.03$  
-Current Price: $1296.37$  
-Margin of Safety: $-27.1 \\%$  
-Implied 5-year Growth Rate by current price: $57.7978 \\%$
-
-```
-g = (price * share_num - dcf_terminal + debt_num - ccs_num) / fcf_num
-x = symbols('x')
-quintic_equation = x**5 + x**4 + x**3 + x**2 + x - g
-solutions = solve(quintic_equation, x)
-numerical_solutions = [sol.evalf() for sol in solutions]
-t = float(numerical_solutions[0])
-r = t * (1 + wacc / 100) - 1
-```
 
 
-## Source of Data
-- Stock relevant data: [Yahoo Finance](https://finance.yahoo.com), [Stock Analysis](https://stockanalysis.com)
-- 10-Year Treasury Bond Rate: [YCharts](https://ycharts.com/indicators/10_year_treasury_rate)
+
+## Reference
+
+- [Investopedia](https://www.investopedia.com)
+- Stock relevant data: [Yahoo Finance](https://finance.yahoo.com)
 - Enterprise Value Multiples by Sector: [NYU](https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/vebitda.html)
 
-## Drawbacks
-- Yet not able to calculate the growth rates of different businesses separately
+## Disclaimer
+- This tool is for educational and research purposes only. It should not be considered as financial advice. Always conduct your own research and consult with a qualified financial advisor before making investment decisions.
