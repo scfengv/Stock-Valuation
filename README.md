@@ -9,8 +9,7 @@ This project serves as a 5-year DCF model to evaluate companies' target prices, 
 
 ```math
 Free\ Cash\ Flow (FCF) =
-EBIT*(1-Tax \%) + Depreciation\ \&\ Amortization - Capital\ Expenditures - Change\ in\ Net\ Working\ Cpatial \\
-
+EBIT*(1-Tax \%) + Depreciation\ \&\ Amortization - Capital\ Expenditures - Change\ in\ Net\ Working\ Cpatial <br>
 = Current\ Operating\ Asset - Current\ Operating\ Liability
 ```
 
